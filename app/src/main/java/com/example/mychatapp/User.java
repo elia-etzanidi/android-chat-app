@@ -1,8 +1,12 @@
 package com.example.mychatapp;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class User {
     private String username;
     private String email;
+    private Map<String, Boolean> chats = new HashMap<>();
 
     // Required empty constructor for Firebase
     public User() {
@@ -29,4 +33,13 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public Map<String, Boolean> getChats() {
+        return chats;
+    }
+
+    public void setChats(Map<String, Boolean> chats) {
+        this.chats = chats;
+    }
+
 }
