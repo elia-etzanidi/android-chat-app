@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.mychatapp.R;
+import com.example.mychatapp.services.AuthService;
 import com.example.mychatapp.util.Util;
 import com.example.mychatapp.callbacks.ChatCallback;
 import com.example.mychatapp.callbacks.UserLookupCallback;
@@ -78,9 +79,7 @@ public class NewChatActivity extends AppCompatActivity {
                     public void onUserFound(User user, String uid) {
                         Log.d("NEW_CHAT_ACTIVITY", "Found user:");
 
-                        String currentUid = FirebaseAuth.getInstance()
-                                .getCurrentUser()
-                                .getUid();
+                        String currentUid = AuthService.getInstance().getCurrentUserUid();
 
                         if (currentUid.equals(uid)) {
                             Toast.makeText(
@@ -144,9 +143,9 @@ public class NewChatActivity extends AppCompatActivity {
     private void openChat(String chatId) {
         Log.d("NEW_CHAT_ACTIVITY", "Opening chat: " + chatId);
 
-        Intent intent = new Intent(this, ChatActivity.class);
-        intent.putExtra("CHAT_ID", chatId);
-        startActivity(intent);
+        Bundle extras = new Bundle();
+        extras.putString("CHAT_ID", chatId);
+        Util.redirectToWithData(this, ChatActivity.class, extras);
     }
 
 }

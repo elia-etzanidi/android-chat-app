@@ -70,18 +70,14 @@ public class LoginSignUpActivity extends AppCompatActivity {
 
     public void handleAuthentication(View view) {
 
-        Log.d("AUTH_TRACE", "1. Button Clicked, starting handleAuthentication.");
-
         String email = tilEmail.getEditText().getText().toString().trim();
         String password = tilPassword.getEditText().getText().toString();
         String username = tilUsername.getEditText().getText().toString();
 
         // Check if we are in Sign Up mode and if inputs are valid
         if (!isLoginMode) {
-            Log.d("AUTH_TRACE", "2. Mode: SIGN UP. Email: " + email + ", Pass Len: " + password.length() + ", User: " + username);
             // We will add more front-end validation later, but check the basics now
             if (email.isEmpty() || password.isEmpty() || username.isEmpty()) {
-                Log.w("AUTH_TRACE", "2a. Input fields are empty, showing error.");
                 Util.showMessage(this, "Sign Up Error", "Please fill in all fields.");
                 return;
             }
@@ -94,10 +90,7 @@ public class LoginSignUpActivity extends AppCompatActivity {
             authService.login(email, password, new LoginCallback() {
                 @Override
                 public void onSuccess(FirebaseUser user) {
-                    Intent intent = new Intent(LoginSignUpActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
-                    finish();
+                    Util.redirectTo(LoginSignUpActivity.this, MainActivity.class);
                 }
 
                 @Override
@@ -107,30 +100,21 @@ public class LoginSignUpActivity extends AppCompatActivity {
             });
         } else {
             // SIGN UP
-            Log.d("AUTH_TRACE", "3. Calling AuthService.signUp...");
             authService.signUp(email, password, username, new SignUpCallback() {
                 @Override
                 public void onSuccess(FirebaseUser user, String username, String email) {
-                    Log.d("AUTH_TRACE", "4. SignUp SUCCESS. Calling DatabaseService...");
                     String userId = user.getUid();
                     User newUser = new User(username, email);
-                    Log.d("AUTH_TRACE", "4a. About to get DatabaseService instance.");
                     DatabaseService databaseService = DatabaseService.getInstance();
-                    Log.d("AUTH_TRACE", "4b. DatabaseService instance obtained.");
 
                     databaseService.saveNewUser(userId, newUser, new DatabaseCallback() {
                         @Override
                         public void onSuccess() {
-                            Log.e("AUTH_TRACE", "4. ELIAS SUCCESS ");
-                            Intent intent = new Intent(LoginSignUpActivity.this, MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                            startActivity(intent);
-                            finish();
+                            Util.redirectTo(LoginSignUpActivity.this, MainActivity.class);
                         }
 
                         @Override
                         public void onFailure(String errorMessage) {
-                            Log.e("AUTH_TRACE", "4. SignUp FAILURE: " + errorMessage);
                             Util.showMessage(LoginSignUpActivity.this,
                                     "Profile Error",
                                     "Account created, but profile failed to save: " + errorMessage);

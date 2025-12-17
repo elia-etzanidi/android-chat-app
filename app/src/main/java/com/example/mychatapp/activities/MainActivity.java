@@ -12,6 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.mychatapp.fragments.ChatsFragment;
 import com.example.mychatapp.fragments.ProfileFragment;
 import com.example.mychatapp.R;
+import com.example.mychatapp.util.Util;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,9 +32,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
-            Intent intent = new Intent(MainActivity.this, LoginSignUpActivity.class);
-            startActivity(intent);
-            finish();
+            Util.redirectTo(this, LoginSignUpActivity.class);
             return;
         } else {
             userId = currentUser.getUid();
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         chatsFragment = new ChatsFragment();
-        profileFragment = ProfileFragment.newInstance(userEmail);
+        profileFragment = new ProfileFragment();
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         if (savedInstanceState == null) {
@@ -66,9 +65,10 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction().replace(R.id.container, profileFragment).commit();
                 return true;
             } else if (id == R.id.new_chat) {
-                Intent intent = new Intent(this, NewChatActivity.class);
-                intent.putExtra("USER_ID", userId);
-                startActivity(intent);
+                Bundle extras = new Bundle();
+                extras.putString("USER_ID", userId);
+                Util.redirectToWithData(this, NewChatActivity.class, extras);
+
                 // so the add icon doesn't get highlighted
                 return false;
             }

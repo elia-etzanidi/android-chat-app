@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.mychatapp.BuildConfig;
+import com.example.mychatapp.callbacks.UserProfileCallback;
 import com.example.mychatapp.models.Message;
 import com.example.mychatapp.util.Util;
 import com.example.mychatapp.callbacks.ChatCallback;
@@ -90,6 +91,30 @@ public class DatabaseService {
                         callback.onFailure(error.getMessage());
                     }
                 });
+    }
+
+    public void getUserProfile(String userId, UserProfileCallback callback) {
+        usersRef.child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    // Firebase maps the JSON directly to User object
+                    User user = snapshot.getValue(User.class);
+                    if (user != null) {
+                        callback.onUserLoaded(user);
+                    } else {
+                        callback.onError("Failed to parse user data.");
+                    }
+                } else {
+                    callback.onError("User does not exist.");
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onError(error.getMessage());
+            }
+        });
     }
 
     public void createOrGetChat(String uid1, String uid2, ChatCallback callback) {

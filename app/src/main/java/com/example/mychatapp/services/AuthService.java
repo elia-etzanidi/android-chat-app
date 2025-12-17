@@ -78,4 +78,19 @@ public class AuthService {
                     }
                 });
     }
+
+    public void logout() {
+        auth.signOut();
+    }
+
+    public String getCurrentUserUid() {
+        if (auth.getCurrentUser() != null) {
+            return auth.getCurrentUser().getUid();
+        }
+        return null;
+    }
+
+    public boolean isUserLoggedIn() {
+        return auth.getCurrentUser() != null;
+    }
 }
