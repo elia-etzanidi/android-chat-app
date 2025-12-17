@@ -21,7 +21,6 @@ import com.example.mychatapp.callbacks.UserLookupCallback;
 import com.example.mychatapp.models.User;
 import com.example.mychatapp.services.DatabaseService;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class NewChatActivity extends AppCompatActivity {
 

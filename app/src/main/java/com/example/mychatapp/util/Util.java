@@ -6,8 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.mychatapp.activities.LoginSignUpActivity;
-
 public class Util {
 
     public static void showMessage(Context context, String title, String message){
