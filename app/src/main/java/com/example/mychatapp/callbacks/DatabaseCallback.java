@@ -1,4 +1,4 @@
-package com.example.mychatapp;
+package com.example.mychatapp.callbacks;
 
 public interface DatabaseCallback {
     void onSuccess();

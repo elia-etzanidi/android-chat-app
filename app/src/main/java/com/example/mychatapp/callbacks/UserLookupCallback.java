@@ -1,7 +1,6 @@
-package com.example.mychatapp;
+package com.example.mychatapp.callbacks;
 
-import com.google.firebase.auth.FirebaseUser;
-import com.example.mychatapp.User;
+import com.example.mychatapp.models.User;
 
 public interface UserLookupCallback {
     void onUserFound(User user, String uid);

@@ -12,10 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyChatApp">
         <activity
-            android:name=".ChatActivity"
+            android:name=".activities.ChatActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginSignUpActivity"
+            android:name=".activities.LoginSignUpActivity"
             android:exported="true"
             android:theme="@style/Theme.MyChatApp">
             <intent-filter>
@@ -25,10 +25,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".NewChatActivity"
+            android:name=".activities.NewChatActivity"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="false" />
     </application>
 

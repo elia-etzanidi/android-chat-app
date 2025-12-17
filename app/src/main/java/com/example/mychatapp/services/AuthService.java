@@ -1,7 +1,9 @@
-package com.example.mychatapp;
+package com.example.mychatapp.services;
 
 import android.util.Log;
 
+import com.example.mychatapp.callbacks.LoginCallback;
+import com.example.mychatapp.callbacks.SignUpCallback;
 import com.google.firebase.auth.FirebaseAuth;
 
 public class AuthService {

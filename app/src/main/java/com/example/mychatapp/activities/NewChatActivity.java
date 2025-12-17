@@ -1,4 +1,4 @@
-package com.example.mychatapp;
+package com.example.mychatapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,6 +13,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.mychatapp.R;
+import com.example.mychatapp.util.Util;
+import com.example.mychatapp.callbacks.ChatCallback;
+import com.example.mychatapp.callbacks.UserLookupCallback;
+import com.example.mychatapp.models.User;
+import com.example.mychatapp.services.DatabaseService;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 

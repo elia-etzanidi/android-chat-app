@@ -1,4 +1,4 @@
-package com.example.mychatapp;
+package com.example.mychatapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,9 +13,16 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.mychatapp.R;
+import com.example.mychatapp.util.Util;
+import com.example.mychatapp.callbacks.DatabaseCallback;
+import com.example.mychatapp.callbacks.LoginCallback;
+import com.example.mychatapp.callbacks.SignUpCallback;
+import com.example.mychatapp.models.User;
+import com.example.mychatapp.services.AuthService;
+import com.example.mychatapp.services.DatabaseService;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.FirebaseDatabase;
 
 public class LoginSignUpActivity extends AppCompatActivity {
     private boolean isLoginMode = true;

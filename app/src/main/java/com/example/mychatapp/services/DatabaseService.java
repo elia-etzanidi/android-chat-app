@@ -1,9 +1,16 @@
-package com.example.mychatapp;
+package com.example.mychatapp.services;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.example.mychatapp.BuildConfig;
+import com.example.mychatapp.models.Message;
+import com.example.mychatapp.util.Util;
+import com.example.mychatapp.callbacks.ChatCallback;
+import com.example.mychatapp.callbacks.DatabaseCallback;
+import com.example.mychatapp.callbacks.UserLookupCallback;
+import com.example.mychatapp.models.User;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -126,6 +133,17 @@ public class DatabaseService {
                     public void onCancelled(@NonNull DatabaseError error) {
                         callback.onError(error.getMessage());
                     }
+                });
+    }
+
+    public void sendMessage(String chatId, Message message, DatabaseCallback callback) {
+        // Reference: chats -> chatId -> messages -> [unique_id]
+        chatsRef.child(chatId).child("messages").push().setValue(message)
+                .addOnSuccessListener(aVoid -> {
+                    if (callback != null) callback.onSuccess();
+                })
+                .addOnFailureListener(e -> {
+                    if (callback != null) callback.onFailure(e.getMessage());
                 });
     }
 }

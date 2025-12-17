@@ -1,4 +1,4 @@
-package com.example.mychatapp;
+package com.example.mychatapp.models;
 
 public class Message {
     private String senderId;
@@ -24,11 +24,11 @@ public class Message {
         this.senderId = senderId;
     }
 
-    public String getText() {
+    public String getMessage() {
         return text;
     }
 
-    public void setText(String text) {
+    public void setMessage(String text) {
         this.text = text;
     }
 

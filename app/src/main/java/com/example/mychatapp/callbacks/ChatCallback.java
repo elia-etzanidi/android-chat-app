@@ -1,4 +1,4 @@
-package com.example.mychatapp;
+package com.example.mychatapp.callbacks;
 
 public interface ChatCallback {
     void onChatReady(String chatId);

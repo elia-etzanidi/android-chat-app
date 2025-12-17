@@ -1,4 +1,4 @@
-package com.example.mychatapp;
+package com.example.mychatapp.util;
 
 import android.app.AlertDialog;
 import android.content.Context;

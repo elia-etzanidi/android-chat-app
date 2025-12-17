@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.appcompat.widget.Toolbar
@@ -60,19 +61,20 @@
         android:elevation="8dp">
 
         <EditText
-            android:id="@+id/editMessage"
+            android:id="@+id/editTextMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:background="@android:color/transparent"
             android:hint="Type a message..."
-            android:padding="12dp"
-            android:background="@android:color/transparent" />
+            android:padding="12dp" />
 
         <ImageButton
-            android:id="@+id/btnSend"
+            android:id="@+id/sendMessageButton"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:src="@android:drawable/ic_menu_send"
+            android:onClick="onSendButtonClick"
             android:background="?attr/selectableItemBackgroundBorderless" />
     </LinearLayout>
 
