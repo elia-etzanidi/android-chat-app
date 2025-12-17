@@ -12,18 +12,21 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyChatApp">
         <activity
+            android:name=".ChatActivity"
+            android:exported="false" />
+        <activity
             android:name=".LoginSignUpActivity"
-            android:exported="true"  android:theme="@style/Theme.MyChatApp">
+            android:exported="true"
+            android:theme="@style/Theme.MyChatApp">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".NewChatActivity"
             android:exported="false" />
-
         <activity
             android:name=".MainActivity"
             android:exported="false" />

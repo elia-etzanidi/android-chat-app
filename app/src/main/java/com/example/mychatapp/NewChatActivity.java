@@ -37,9 +37,9 @@ public class NewChatActivity extends AppCompatActivity {
         String receivedUserId = intent.getStringExtra("USER_ID");
 
         if (receivedUserId != null) {
-            Log.d("NewChatActivity", "Received User ID: " + receivedUserId);
+            Log.d("NEW_CHAT_ACTIVITY", "Received User ID: " + receivedUserId);
         } else {
-            Log.e("NewChatActivity", "User ID was not passed!");
+            Log.e("NEW_CHAT_ACTIVITY", "User ID was not passed!");
         }
 
         ImageView backArrow = findViewById(R.id.back_arrow);
@@ -70,9 +70,7 @@ public class NewChatActivity extends AppCompatActivity {
 
                     @Override
                     public void onUserFound(User user, String uid) {
-                        Log.d("USER_LOOKUP", "Found user:");
-                        Log.d("USER_LOOKUP", "Username: " + user.getUsername());
-                        Log.d("USER_LOOKUP", "UID: " + uid);
+                        Log.d("NEW_CHAT_ACTIVITY", "Found user:");
 
                         String currentUid = FirebaseAuth.getInstance()
                                 .getCurrentUser()
@@ -87,15 +85,14 @@ public class NewChatActivity extends AppCompatActivity {
                             return;
                         }
 
-                        Log.d("USER_LOOKUP", "Starting chat with " + user.getUsername());
+                        Log.d("NEW_CHAT_ACTIVITY", "Starting chat with " + user.getUsername());
 
-                        String chatId = Util.generateChatId(currentUid, uid);
-                        Log.d("CHAT", "Chat ID: " + chatId);
+                        startChatWithUser(currentUid, uid);
                     }
 
                     @Override
                     public void onUserNotFound() {
-                        Log.d("USER_LOOKUP", "User NOT found");
+                        Log.d("NEW_CHAT_ACTIVITY", "User NOT found");
 
                         Toast.makeText(
                                 NewChatActivity.this,
@@ -106,7 +103,7 @@ public class NewChatActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(String errorMessage) {
-                        Log.e("USER_LOOKUP", "Error: " + errorMessage);
+                        Log.e("NEW_CHAT_ACTIVITY", "Error: " + errorMessage);
 
                         Toast.makeText(
                                 NewChatActivity.this,
@@ -117,4 +114,33 @@ public class NewChatActivity extends AppCompatActivity {
                 }
         );
     }
+
+    private void startChatWithUser(String currentUid, String uid) {
+
+        DatabaseService.getInstance().createOrGetChat(
+                currentUid,
+                uid,
+                new ChatCallback() {
+
+                    @Override
+                    public void onChatReady(String chatId) {
+                        openChat(chatId);
+                    }
+
+                    @Override
+                    public void onError(String errorMessage) {
+                        Util.showMessage(NewChatActivity.this, "Error starting chat", errorMessage);
+                    }
+                }
+        );
+    }
+
+    private void openChat(String chatId) {
+        Log.d("NEW_CHAT_ACTIVITY", "Opening chat: " + chatId);
+
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra("CHAT_ID", chatId);
+        startActivity(intent);
+    }
+
 }

@@ -10,6 +10,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class DatabaseService {
     private static DatabaseService instance;
     private final DatabaseReference usersRef;
@@ -68,7 +71,7 @@ public class DatabaseService {
                         for (DataSnapshot userSnapshot : snapshot.getChildren()) {
 
                             User user = userSnapshot.getValue(User.class);
-                            String uid = userSnapshot.getKey(); // 🔑 UID here
+                            String uid = userSnapshot.getKey();
 
                             callback.onUserFound(user, uid);
                             return;
@@ -78,6 +81,50 @@ public class DatabaseService {
                     @Override
                     public void onCancelled(@NonNull DatabaseError error) {
                         callback.onFailure(error.getMessage());
+                    }
+                });
+    }
+
+    public void createOrGetChat(String uid1, String uid2, ChatCallback callback) {
+
+        if (uid1.equals(uid2)) {
+            callback.onError("Cannot create chat with yourself");
+            return;
+        }
+
+        String chatId = Util.generateChatId(uid1, uid2);
+
+        chatsRef.child(chatId)
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                        if (snapshot.exists()) {
+                            callback.onChatReady(chatId);
+                            return;
+                        }
+
+                        Map<String, Object> chatData = new HashMap<>();
+
+                        Map<String, Object> participants = new HashMap<>();
+                        participants.put(uid1, true);
+                        participants.put(uid2, true);
+
+                        chatData.put("participants", participants);
+                        chatData.put("createdAt", System.currentTimeMillis());
+
+                        chatsRef.child(chatId)
+                                .setValue(chatData)
+                                .addOnSuccessListener(aVoid -> callback.onChatReady(chatId))
+                                .addOnFailureListener(e ->
+                                        callback.onError(e.getMessage())
+                                );
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        callback.onError(error.getMessage());
                     }
                 });
     }
