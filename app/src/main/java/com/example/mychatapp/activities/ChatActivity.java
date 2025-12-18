@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,16 +15,18 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.mychatapp.R;
 import com.example.mychatapp.callbacks.DatabaseCallback;
+import com.example.mychatapp.callbacks.UsernameLookupCallback;
 import com.example.mychatapp.models.Message;
+import com.example.mychatapp.services.AuthService;
 import com.example.mychatapp.services.DatabaseService;
 import com.example.mychatapp.util.Util;
-import com.google.firebase.auth.FirebaseAuth;
 
 
 public class ChatActivity extends AppCompatActivity {
 
     EditText messageEditText;
     private String currentChatId;
+    TextView textUsername;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,15 +42,22 @@ public class ChatActivity extends AppCompatActivity {
         Intent intent = getIntent();
         currentChatId = intent.getStringExtra("CHAT_ID");
         messageEditText = findViewById(R.id.editTextMessage);
+        textUsername = findViewById(R.id.textUsername);
+
+        displayUsername(currentChatId);
+
+        ImageButton backArrow = findViewById(R.id.back_arrow);
+        backArrow.setOnClickListener(v -> {
+            Util.redirectTo(this, MainActivity.class, false);
+        });
+
     }
 
     private void handleSendMessage() {
         String text = messageEditText.getText().toString().trim();
         if (text.isEmpty()) return;
 
-        String currentUid = FirebaseAuth.getInstance().
-                getCurrentUser()
-                .getUid();
+        String currentUid = AuthService.getInstance().getCurrentUserUid();
         long timestamp = System.currentTimeMillis();
 
         // Create message object
@@ -68,6 +79,29 @@ public class ChatActivity extends AppCompatActivity {
 
     public void onSendButtonClick(View view){
         handleSendMessage();
+    }
+
+    public void displayUsername(String chatId) {
+        String currentUid = AuthService.getInstance().getCurrentUserUid();
+        String[] ids = chatId.split("_");
+        String otherUserId = ids[0].equals(currentUid) ? ids[1] : ids[0];
+
+        DatabaseService.getInstance().findUsernameByUserId(otherUserId, new UsernameLookupCallback() {
+            @Override
+            public void onUsernameFound(String username) {
+                textUsername.setText(username);
+            }
+
+            @Override
+            public void onUsernameNotFound() {
+                Util.showMessage(ChatActivity.this, "Error: ", "User not found");
+            }
+
+            @Override
+            public void onFailure(String errorMessage) {
+                Util.showMessage(ChatActivity.this, "Error: ", errorMessage);
+            }
+        });
     }
 
 

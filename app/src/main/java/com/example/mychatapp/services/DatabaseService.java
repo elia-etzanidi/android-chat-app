@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.example.mychatapp.BuildConfig;
 import com.example.mychatapp.callbacks.UserProfileCallback;
+import com.example.mychatapp.callbacks.UsernameLookupCallback;
 import com.example.mychatapp.models.Message;
 import com.example.mychatapp.util.Util;
 import com.example.mychatapp.callbacks.ChatCallback;
@@ -56,17 +57,6 @@ public class DatabaseService {
     }
 
     // Method to save the User object after sign-up
-    public void saveNewUser(String userId, User user, DatabaseCallback callback) {
-        usersRef.child(userId).setValue(user)
-                .addOnSuccessListener(aVoid -> {
-                    // Inform the calling component (Activity) that it was successful
-                    callback.onSuccess();
-                })
-                .addOnFailureListener(e -> {
-                    // Inform the calling component of the failure
-                    callback.onFailure(e.getMessage());
-                });
-    }
 
     public void createUserWithUsername(String userId, User user, DatabaseCallback callback) {
         String username = user.getUsername();
@@ -126,6 +116,26 @@ public class DatabaseService {
                 callback.onError(error.getMessage());
             }
         });
+    }
+
+    public void findUsernameByUserId(String userId, UsernameLookupCallback callback) {
+        usersRef.child(userId).child("username")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            String username = snapshot.getValue(String.class);
+                            callback.onUsernameFound(username);
+                        } else {
+                            callback.onUsernameNotFound();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        callback.onFailure(error.getMessage());
+                    }
+                });
     }
 
     public void createOrGetChat(String uid1, String uid2, ChatCallback callback) {
