@@ -17,7 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mychatapp.R;
-import com.example.mychatapp.adapter.MessageAdapter;
+import com.example.mychatapp.adapters.MessageAdapter;
 import com.example.mychatapp.callbacks.DatabaseCallback;
 import com.example.mychatapp.callbacks.MessagesCallback;
 import com.example.mychatapp.callbacks.UsernameLookupCallback;

@@ -5,9 +5,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.mychatapp.BuildConfig;
+import com.example.mychatapp.callbacks.ChatListCallback;
 import com.example.mychatapp.callbacks.MessagesCallback;
 import com.example.mychatapp.callbacks.UserProfileCallback;
 import com.example.mychatapp.callbacks.UsernameLookupCallback;
+import com.example.mychatapp.models.Chat;
 import com.example.mychatapp.models.Message;
 import com.example.mychatapp.util.Util;
 import com.example.mychatapp.callbacks.ChatCallback;
@@ -19,6 +21,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
@@ -222,5 +225,63 @@ public class DatabaseService {
                 callback.onFailure(error.getMessage());
             }
         });
+    }
+
+    public void listenToUserChats(String currentUserId, ChatListCallback callback) {
+        Log.d("CHAT_DEBUG", "Starting listener for UID: " + currentUserId);
+        // Query for chats where the current user is a participant
+        Query userChatsQuery = chatsRef.orderByChild("participants/" + currentUserId).equalTo(true);
+
+        userChatsQuery.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, String previousChildName) {
+                Log.d("CHAT_DEBUG", "Found a chat! ID: " + snapshot.getKey());
+                Log.d("CHAT_DEBUG", "Full Snapshot Content: " + snapshot.getValue());
+                Chat model = parseChatSnapshot(snapshot, currentUserId);
+                if (model != null) {
+                    callback.onChatAdded(model);
+                } else {
+                    Log.e("CHAT_DEBUG", "Parsing failed for chat: " + snapshot.getKey());
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, String previousChildName) {
+                Log.d("CHAT_DEBUG", "Chat updated: " + snapshot.getKey());
+                Chat model = parseChatSnapshot(snapshot, currentUserId);
+                if (model != null) callback.onChatUpdated(model);
+            }
+
+            @Override public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+            @Override public void onChildMoved(@NonNull DataSnapshot snapshot, String previousChildName) {}
+            @Override public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("CHAT_DEBUG", "Database Error: " + error.getMessage());
+                callback.onError(error.getMessage());
+            }
+        });
+    }
+
+    // Helper method to extract data from the snapshot
+    private Chat parseChatSnapshot(DataSnapshot snapshot, String currentUserId) {
+        String chatId = snapshot.getKey();
+        String lastMsg = "No messages";
+
+        // Get last message text
+        DataSnapshot messagesSnapshot = snapshot.child("messages");
+        if (messagesSnapshot.exists()) {
+            DataSnapshot lastChild = null;
+            for (DataSnapshot child : messagesSnapshot.getChildren()) {
+                lastChild = child;
+            }
+            if (lastChild != null) {
+                lastMsg = lastChild.child("message").getValue(String.class);
+            }
+        }
+
+        // Identify the other user from the Chat ID (UID1_UID2)
+        String[] uids = chatId.split("_");
+        String otherUserId = uids[0].equals(currentUserId) ? uids[1] : uids[0];
+
+        return new Chat(otherUserId, "User: " + otherUserId, lastMsg, "");
     }
 }
