@@ -75,9 +75,7 @@ public class NewChatActivity extends AppCompatActivity {
                 new UserLookupCallback() {
 
                     @Override
-                    public void onUserFound(User user, String uid) {
-                        Log.d("NEW_CHAT_ACTIVITY", "Found user:");
-
+                    public void onUserFound(String uid) {
                         String currentUid = AuthService.getInstance().getCurrentUserUid();
 
                         if (currentUid.equals(uid)) {
@@ -88,8 +86,6 @@ public class NewChatActivity extends AppCompatActivity {
                             ).show();
                             return;
                         }
-
-                        Log.d("NEW_CHAT_ACTIVITY", "Starting chat with " + user.getUsername());
 
                         startChatWithUser(currentUid, uid);
                     }

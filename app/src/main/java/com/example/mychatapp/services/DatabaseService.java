@@ -83,26 +83,18 @@ public class DatabaseService {
     }
 
     public void findUserByUsername(String username, UserLookupCallback callback) {
-        usersRef.orderByChild("username")
-                .equalTo(username)
+        usernamesRef.child(username)
                 .addListenerForSingleValueEvent(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-
                         if (!snapshot.exists()) {
                             callback.onUserNotFound();
                             return;
                         }
 
-                        for (DataSnapshot userSnapshot : snapshot.getChildren()) {
-
-                            User user = userSnapshot.getValue(User.class);
-                            String uid = userSnapshot.getKey();
-
-                            callback.onUserFound(user, uid);
-                            return;
-                        }
+                        String uid = snapshot.getValue(String.class);
+                        callback.onUserFound(uid);
                     }
 
                     @Override
