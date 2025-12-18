@@ -38,7 +38,7 @@ public class ProfileFragment extends Fragment {
         logoutButton.setOnClickListener(v -> {
             AuthService.getInstance().logout();
 
-            Util.redirectTo(getActivity(), LoginSignUpActivity.class);
+            Util.redirectTo(getActivity(), LoginSignUpActivity.class, true);
         });
 
         return view;
@@ -62,7 +62,7 @@ public class ProfileFragment extends Fragment {
                 }
             });
         } else {
-            Util.redirectTo(getActivity(), LoginSignUpActivity.class);
+            Util.redirectTo(getActivity(), LoginSignUpActivity.class, true);
         }
     }
 }

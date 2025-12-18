@@ -50,7 +50,7 @@ public class NewChatActivity extends AppCompatActivity {
 
         ImageView backArrow = findViewById(R.id.back_arrow);
         backArrow.setOnClickListener(v -> {
-            finish();
+            Util.redirectTo(this, MainActivity.class, false);
         });
 
         usernameInput = findViewById(R.id.usernameInput);
@@ -144,7 +144,7 @@ public class NewChatActivity extends AppCompatActivity {
 
         Bundle extras = new Bundle();
         extras.putString("CHAT_ID", chatId);
-        Util.redirectToWithData(this, ChatActivity.class, extras);
+        Util.redirectToWithData(this, ChatActivity.class, extras, false);
     }
 
 }

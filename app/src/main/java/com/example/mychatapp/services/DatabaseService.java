@@ -25,6 +25,7 @@ public class DatabaseService {
     private static DatabaseService instance;
     private final DatabaseReference usersRef;
     private final DatabaseReference chatsRef;
+    private final DatabaseReference usernamesRef;
 
     public DatabaseService() {
         Log.d("DB_TRACE", "DatabaseService constructor started.");
@@ -36,6 +37,10 @@ public class DatabaseService {
         chatsRef = FirebaseDatabase
                 .getInstance(BuildConfig.DATABASE_URL)
                 .getReference("chats");
+
+        usernamesRef = FirebaseDatabase
+                .getInstance(BuildConfig.DATABASE_URL)
+                .getReference("usernames");
         Log.d("DB_TRACE", "DatabaseService constructor finished successfully.");
     }
 
@@ -60,6 +65,20 @@ public class DatabaseService {
                 .addOnFailureListener(e -> {
                     // Inform the calling component of the failure
                     callback.onFailure(e.getMessage());
+                });
+    }
+
+    public void createUserWithUsername(String userId, User user, DatabaseCallback callback) {
+        String username = user.getUsername();
+
+        usernamesRef.child(username).setValue(userId)
+                .addOnSuccessListener(aVoid -> {
+                    usersRef.child(userId).setValue(user)
+                            .addOnSuccessListener(v -> callback.onSuccess())
+                            .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+                })
+                .addOnFailureListener(e -> {
+                    callback.onFailure("Username already exists");
                 });
     }
 

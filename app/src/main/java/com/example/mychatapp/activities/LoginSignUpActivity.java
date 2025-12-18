@@ -88,7 +88,7 @@ public class LoginSignUpActivity extends AppCompatActivity {
             authService.login(email, password, new LoginCallback() {
                 @Override
                 public void onSuccess(FirebaseUser user) {
-                    Util.redirectTo(LoginSignUpActivity.this, MainActivity.class);
+                    Util.redirectTo(LoginSignUpActivity.this, MainActivity.class, true);
                 }
 
                 @Override
@@ -105,17 +105,19 @@ public class LoginSignUpActivity extends AppCompatActivity {
                     User newUser = new User(username, email);
                     DatabaseService databaseService = DatabaseService.getInstance();
 
-                    databaseService.saveNewUser(userId, newUser, new DatabaseCallback() {
+                    databaseService.createUserWithUsername(userId, newUser, new DatabaseCallback() {
                         @Override
                         public void onSuccess() {
-                            Util.redirectTo(LoginSignUpActivity.this, MainActivity.class);
+                            Util.redirectTo(LoginSignUpActivity.this, MainActivity.class, true);
                         }
 
                         @Override
                         public void onFailure(String errorMessage) {
-                            Util.showMessage(LoginSignUpActivity.this,
-                                    "Profile Error",
-                                    "Account created, but profile failed to save: " + errorMessage);
+                            Util.showMessage(
+                                    LoginSignUpActivity.this,
+                                    "Sign Up Error",
+                                    errorMessage
+                            );
                         }
                     });
                 }

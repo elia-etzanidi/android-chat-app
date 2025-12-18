@@ -25,15 +25,17 @@ public class Util {
         }
     }
 
-    public static void redirectTo(Activity activity, Class<?> destinationClass) {
+    public static void redirectTo(Activity activity, Class<?> destinationClass, boolean finish) {
         if (activity == null) return;
         Intent intent = new Intent(activity, destinationClass);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         activity.startActivity(intent);
-        activity.finish();
+        if (finish) {
+            activity.finish();
+        }
     }
 
-    public static void redirectToWithData(Context context, Class<?> destinationClass, Bundle data) {
+    public static void redirectToWithData(Context context, Class<?> destinationClass, Bundle data, boolean finish) {
         if (context == null) return;
 
         Intent intent = new Intent(context, destinationClass);
@@ -44,9 +46,10 @@ public class Util {
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         context.startActivity(intent);
-
-        if (context instanceof Activity) {
-            ((Activity) context).finish();
+        if (finish) {
+            if (context instanceof Activity) {
+                ((Activity) context).finish();
+            }
         }
     }
 }

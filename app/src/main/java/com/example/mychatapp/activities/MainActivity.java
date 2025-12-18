@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser == null) {
-            Util.redirectTo(this, LoginSignUpActivity.class);
+            Util.redirectTo(this, LoginSignUpActivity.class, true);
             return;
         } else {
             userId = currentUser.getUid();
@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.new_chat) {
                 Bundle extras = new Bundle();
                 extras.putString("USER_ID", userId);
-                Util.redirectToWithData(this, NewChatActivity.class, extras);
+                Util.redirectToWithData(this, NewChatActivity.class, extras, false);
 
                 // so the add icon doesn't get highlighted
                 return false;
