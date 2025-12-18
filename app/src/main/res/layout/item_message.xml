@@ -5,13 +5,21 @@
     android:padding="4dp">
 
     <TextView
-        android:id="@+id/textMessage"
+        android:id="@+id/textUsernameBubble"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="start"
+        android:textSize="12sp"
+        android:textColor="#666666"
+        android:paddingStart="8dp"
+        android:paddingBottom="2dp"/>
+
+    <TextView
+        android:id="@+id/textMessageBubble"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@drawable/rounded_bubble"
         android:maxWidth="280dp"
-        android:text="This is a chat bubble!"
+        android:textSize="16sp"
         android:textColor="#000000"
-        android:textSize="16sp" />
+        android:padding="10dp"/>
 </LinearLayout>

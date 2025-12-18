@@ -2,16 +2,18 @@ package com.example.mychatapp.models;
 
 public class Message {
     private String senderId;
-    private String text;
+    private String senderUsername;
+    private String message;
     private long timestamp;
 
     // Required public no-argument constructor for Firebase
     public Message() {
     }
 
-    public Message(String senderId, String text, long timestamp) {
+    public Message(String senderId, String senderUsername, String text, long timestamp) {
         this.senderId = senderId;
-        this.text = text;
+        this.senderUsername = senderUsername;
+        this.message = text;
         this.timestamp = timestamp;
     }
 
@@ -25,11 +27,11 @@ public class Message {
     }
 
     public String getMessage() {
-        return text;
+        return message;
     }
 
     public void setMessage(String text) {
-        this.text = text;
+        this.message = text;
     }
 
     public long getTimestamp() {
@@ -38,5 +40,13 @@ public class Message {
 
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public String getSenderUsername() {
+        return senderUsername;
+    }
+
+    public void setSenderUsername(String senderUsername) {
+        this.senderUsername = senderUsername;
     }
 }

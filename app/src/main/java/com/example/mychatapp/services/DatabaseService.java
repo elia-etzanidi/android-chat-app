@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 
 import com.example.mychatapp.BuildConfig;
+import com.example.mychatapp.callbacks.MessagesCallback;
 import com.example.mychatapp.callbacks.UserProfileCallback;
 import com.example.mychatapp.callbacks.UsernameLookupCallback;
 import com.example.mychatapp.models.Message;
@@ -13,6 +14,7 @@ import com.example.mychatapp.callbacks.ChatCallback;
 import com.example.mychatapp.callbacks.DatabaseCallback;
 import com.example.mychatapp.callbacks.UserLookupCallback;
 import com.example.mychatapp.models.User;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -191,5 +193,34 @@ public class DatabaseService {
                 .addOnFailureListener(e -> {
                     if (callback != null) callback.onFailure(e.getMessage());
                 });
+    }
+
+    public void listenToMessages(String chatId, MessagesCallback callback) {
+        DatabaseReference messagesRef = chatsRef.child(chatId).child("messages");
+
+        messagesRef.orderByChild("timestamp").addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(@NonNull DataSnapshot snapshot, String previousChildName) {
+                Log.d("CHAT_LOG", "Raw snapshot: " + snapshot.getValue());
+                Message message = snapshot.getValue(Message.class);
+                if (message != null) {
+                    callback.onMessageAdded(message);
+                }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull DataSnapshot snapshot, String previousChildName) {}
+
+            @Override
+            public void onChildRemoved(@NonNull DataSnapshot snapshot) {}
+
+            @Override
+            public void onChildMoved(@NonNull DataSnapshot snapshot, String previousChildName) {}
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onFailure(error.getMessage());
+            }
+        });
     }
 }
