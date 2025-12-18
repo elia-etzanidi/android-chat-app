@@ -36,9 +36,8 @@ public class ProfileFragment extends Fragment {
 
         logoutButton = view.findViewById(R.id.btn_logout);
         logoutButton.setOnClickListener(v -> {
-            AuthService.getInstance().logout();
-
             Util.redirectTo(getActivity(), LoginSignUpActivity.class, true);
+            AuthService.getInstance().logout();
         });
 
         return view;

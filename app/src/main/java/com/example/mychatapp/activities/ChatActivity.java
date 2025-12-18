@@ -45,35 +45,46 @@ public class ChatActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_chat);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
+        // 1. Get Chat ID and Username from Intent
         Intent intent = getIntent();
         currentChatId = intent.getStringExtra("CHAT_ID");
+
+        // 2. Initialize Views
         messageEditText = findViewById(R.id.editTextMessage);
         textUsername = findViewById(R.id.textUsername);
 
+        // Header Name
         displayUsername(currentChatId);
 
+        // 4. Back button
         ImageButton backArrow = findViewById(R.id.back_arrow);
         backArrow.setOnClickListener(v -> {
             Util.redirectTo(this, MainActivity.class, false);
         });
 
-        fetchCurrentUsername();
+        // 5. Setup RecyclerView
         recyclerMessages = findViewById(R.id.chatRecyclerView);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        layoutManager.setStackFromEnd(true); // 👈 important for chat
+        layoutManager.setStackFromEnd(true);
         recyclerMessages.setLayoutManager(layoutManager);
 
+        // Ensure messageList is initialized before adapter
+        if (messageList == null) messageList = new ArrayList<>();
         adapter = new MessageAdapter(messageList);
         recyclerMessages.setAdapter(adapter);
 
-        listenForMessages(currentChatId);
+
+        fetchCurrentUsername();
+        if (currentChatId != null) {
+            listenForMessages(currentChatId);
+        }
 
 
     }
